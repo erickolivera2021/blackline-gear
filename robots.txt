@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-*
+Disallow: /checkout.html
+Disallow: /checkout-sucesso.html
+Disallow: /conta.html
+Disallow: /pedidos.html
+Disallow: /pedido-detalhe.html
+Disallow: /desejos.html
+
+Sitemap: https://www.blacklinegear.com.br/sitemap.xml

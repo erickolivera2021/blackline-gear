@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Produtos — Admin BLACKLINE</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar" id="adminTopbar"></div>
+
+    <!-- Search + Filter -->
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px;position:relative">
+        <input class="input" placeholder="Buscar produto por nome ou SKU..." style="padding-left:42px" id="searchInput" />
+        <i class="fas fa-search" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted)"></i>
+      </div>
+      <select class="catalog-sort" id="filterCat">
+        <option value="">Todas categorias</option>
+        <option>Infladores</option><option>Kits</option><option>Câmaras de ar</option>
+      </select>
+      <select class="catalog-sort" id="filterStatus">
+        <option value="">Todos status</option><option>Ativo</option><option>Inativo</option>
+      </select>
+      <a href="admin-produto-form.html" class="btn btn-primary"><i class="fas fa-plus"></i> NOVO PRODUTO</a>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th><th>SKU</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="productsTable"></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;font-size:.82rem;color:var(--muted)">Total: <strong id="totalCount">3 produtos</strong></div>
+  </main>
+</div>
+
+<!-- Modal de confirmação delete -->
+<div class="modal-overlay" id="delModal">
+  <div class="modal">
+    <div class="modal-header"><h3>EXCLUIR PRODUTO</h3><button class="modal-close" onclick="document.getElementById('delModal').classList.remove('open')">×</button></div>
+    <div class="modal-body">
+      <p>Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="document.getElementById('delModal').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-danger" onclick="confirmDelete()"><i class="fas fa-trash"></i> EXCLUIR</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+renderAdminSidebar('produtos');
+renderAdminTopbar('Produtos', '<a href="admin-produto-form.html" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> NOVO</a>');
+
+let deleteId = null;
+function renderTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('filterCat').value;
+  const items = PRODUCTS.filter(p => {
+    if (search && !p.name.toLowerCase().includes(search) && !p.sku.toLowerCase().includes(search)) return false;
+    if (cat && p.category !== cat) return false;
+    return true;
+  });
+  document.getElementById('totalCount').textContent = items.length + ' produto' + (items.length !== 1 ? 's' : '');
+
+  const t = document.getElementById('productsTable');
+  t.innerHTML = items.map(p => {
+    const stockLevel = p.stock < 20 ? 'critical' : p.stock < 50 ? 'low' : 'ok';
+    return `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:12px">
+        <img src="${p.image}" alt="${p.shortName}" style="width:48px;height:48px;border-radius:var(--r-xs);object-fit:cover" />
+        <div><strong>${p.shortName}</strong><br><small class="text-muted">${p.name.substring(0,40)}...</small></div>
+      </div></td>
+      <td><code style="font-family:var(--font-mono);font-size:.78rem">${p.sku}</code></td>
+      <td><span class="badge badge-ghost">${p.category}</span></td>
+      <td><strong style="color:var(--yellow)">${formatPrice(p.price)}</strong></td>
+      <td><span class="stock-level ${stockLevel}">${p.stock}</span></td>
+      <td>${p.active ? '<span class="badge badge-success">Ativo</span>' : '<span class="badge badge-danger">Inativo</span>'}</td>
+      <td><div class="table-actions">
+        <a href="${p.page}" class="view" title="Ver"><i class="fas fa-eye"></i></a>
+        <a href="admin-produto-form.html?id=${p.id}" class="edit" title="Editar"><i class="fas fa-pen"></i></a>
+        <button class="del" title="Excluir" onclick="askDelete('${p.id}')"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>
+  `;}).join('');
+}
+
+function askDelete(id) {
+  deleteId = id;
+  document.getElementById('delModal').classList.add('open');
+}
+function confirmDelete() {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = 'Produto excluído (simulação)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+  document.getElementById('delModal').classList.remove('open');
+}
+
+document.getElementById('searchInput').addEventListener('input', renderTable);
+document.getElementById('filterCat').addEventListener('change', renderTable);
+document.getElementById('filterStatus').addEventListener('change', renderTable);
+
+renderTable();
+</script>
+</body>
+</html>

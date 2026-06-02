@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Relatórios — Admin BLACKLINE</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/admin.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar" id="adminTopbar"></div>
+
+    <!-- Period filter -->
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <select class="catalog-sort" style="min-width:180px">
+        <option>Últimos 30 dias</option><option>Últimos 7 dias</option><option>Este mês</option><option>Últimos 6 meses</option><option>Este ano</option>
+      </select>
+      <input type="date" class="input" style="max-width:160px" />
+      <span style="display:flex;align-items:center;color:var(--muted);font-size:.85rem">até</span>
+      <input type="date" class="input" style="max-width:160px" />
+      <button class="btn btn-primary"><i class="fas fa-filter"></i> APLICAR</button>
+      <button class="btn btn-ghost" style="margin-left:auto"><i class="fas fa-file-pdf"></i> EXPORTAR PDF</button>
+    </div>
+
+    <!-- KPIs -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--success-dim);color:var(--success)"><i class="fas fa-dollar-sign"></i></div><div class="stat-card-value">R$ 12.450</div><div class="stat-card-label">RECEITA TOTAL</div><div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +18.5%</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--info-dim);color:var(--info)"><i class="fas fa-shopping-cart"></i></div><div class="stat-card-value">47</div><div class="stat-card-label">PEDIDOS</div><div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +12%</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--yellow-10);color:var(--yellow)"><i class="fas fa-bullseye"></i></div><div class="stat-card-value">3.8%</div><div class="stat-card-label">TAXA DE CONVERSÃO</div><div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +0.6%</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--warning-dim);color:var(--warning)"><i class="fas fa-receipt"></i></div><div class="stat-card-value">R$ 264</div><div class="stat-card-label">TICKET MÉDIO</div><div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +5.2%</div></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="report-grid">
+      <div class="report-card">
+        <h3>EVOLUÇÃO DE VENDAS</h3>
+        <p>Receita mensal nos últimos 6 meses</p>
+        <div style="height:240px"><canvas id="salesChart"></canvas></div>
+      </div>
+
+      <div class="report-card">
+        <h3>PEDIDOS POR STATUS</h3>
+        <p>Distribuição atual de pedidos</p>
+        <div style="height:240px"><canvas id="statusChart"></canvas></div>
+      </div>
+
+      <div class="report-card">
+        <h3>PRODUTOS MAIS VENDIDOS</h3>
+        <p>Top 3 produtos por unidades vendidas</p>
+        <div style="height:240px"><canvas id="productsChart"></canvas></div>
+      </div>
+
+      <div class="report-card">
+        <h3>FORMAS DE PAGAMENTO</h3>
+        <p>Distribuição por método</p>
+        <div style="height:240px"><canvas id="paymentChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Tables: Top customers + Top products -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px">
+      <div class="chart-card">
+        <h3>TOP CLIENTES</h3>
+        <div class="table-wrap" style="margin-top:14px;border:none">
+          <table>
+            <thead><tr><th>Cliente</th><th>Pedidos</th><th>Gasto</th></tr></thead>
+            <tbody id="topClientsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>PRODUTOS POR RECEITA</h3>
+        <div class="table-wrap" style="margin-top:14px;border:none">
+          <table>
+            <thead><tr><th>Produto</th><th>Unidades</th><th>Receita</th></tr></thead>
+            <tbody id="topProductsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer acquisition chart -->
+    <div class="chart-card" style="margin-top:24px">
+      <h3>AQUISIÇÃO DE CLIENTES</h3>
+      <p class="text-muted" style="font-size:.82rem;margin-bottom:14px">Novos cadastros vs pedidos por mês</p>
+      <div style="height:260px"><canvas id="acquisitionChart"></canvas></div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+renderAdminSidebar('relatorios');
+renderAdminTopbar('Relatórios', '<button class="btn btn-primary btn-sm"><i class="fas fa-download"></i> EXPORTAR</button>');
+
+const yellow = '#FFD400', cyan = '#00C8FF', green = '#22C55E', orange = '#F59E0B', danger = '#EF4444';
+const labelColor = '#c8c8cc';
+const gridColor = 'rgba(255,255,255,0.05)';
+
+// Sales evolution
+new Chart(document.getElementById('salesChart'), {
+  type: 'bar',
+  data: {
+    labels: ADMIN_STATS.monthlyRevenue.map(m => m.month),
+    datasets: [{ label: 'Receita', data: ADMIN_STATS.monthlyRevenue.map(m => m.value), backgroundColor: yellow, borderRadius: 6 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { ticks: { color: labelColor, callback: v => 'R$' + (v/1000) + 'k' }, grid: { color: gridColor } }, x: { ticks: { color: labelColor }, grid: { display: false } } }
+  }
+});
+
+// Status distribution
+new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Pago', 'Pendente', 'Enviado', 'Entregue', 'Cancelado'],
+    datasets: [{ data: [1, 1, 1, 1, 1], backgroundColor: [green, orange, cyan, '#22C55E', danger], borderColor: '#0c0c10', borderWidth: 3 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: labelColor, font: { size: 11 } } } } }
+});
+
+// Top products
+new Chart(document.getElementById('productsChart'), {
+  type: 'bar',
+  data: {
+    labels: PRODUCTS.map(p => p.shortName),
+    datasets: [{ data: [28, 12, 7], backgroundColor: [yellow, cyan, green], borderRadius: 6 }]
+  },
+  options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { ticks: { color: labelColor }, grid: { display: false } }, x: { ticks: { color: labelColor }, grid: { color: gridColor } } }
+  }
+});
+
+// Payment methods
+new Chart(document.getElementById('paymentChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['PIX', 'Cartão', 'Boleto'],
+    datasets: [{ data: [55, 38, 7], backgroundColor: [green, yellow, cyan], borderColor: '#0c0c10', borderWidth: 3 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: labelColor, font: { size: 11 } } } } }
+});
+
+// Customer acquisition
+new Chart(document.getElementById('acquisitionChart'), {
+  type: 'line',
+  data: {
+    labels: ADMIN_STATS.monthlyRevenue.map(m => m.month),
+    datasets: [
+      { label: 'Novos clientes', data: [12, 18, 14, 22, 38, 0], borderColor: cyan, backgroundColor: 'rgba(0,200,255,0.1)', borderWidth: 2, fill: true, tension: 0.4 },
+      { label: 'Pedidos', data: [22, 28, 24, 35, 47, 0], borderColor: yellow, backgroundColor: 'rgba(255,212,0,0.1)', borderWidth: 2, fill: true, tension: 0.4 }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { color: labelColor } } },
+    scales: { y: { ticks: { color: labelColor }, grid: { color: gridColor } }, x: { ticks: { color: labelColor }, grid: { display: false } } }
+  }
+});
+
+// Top clients table
+const topClients = [...CUSTOMERS].sort((a,b) => b.totalSpent - a.totalSpent).slice(0, 5);
+document.getElementById('topClientsTable').innerHTML = topClients.map(c => `
+  <tr>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm">${c.name.split(' ').map(n=>n[0]).join('').substring(0,2)}</div><strong>${c.name.split(' ')[0]}</strong></div></td>
+    <td>${c.orders}</td>
+    <td><strong style="color:var(--yellow)">${formatPrice(c.totalSpent)}</strong></td>
+  </tr>
+`).join('');
+
+// Top products by revenue
+const productRevenue = [
+  { name: 'X-PUMP 120PSI', units: 28, revenue: 28 * 579 },
+  { name: 'Kit No Flat', units: 12, revenue: 12 * 688 },
+  { name: 'Nano Tube TPU', units: 7, revenue: 7 * 109 }
+].sort((a,b) => b.revenue - a.revenue);
+
+document.getElementById('topProductsTable').innerHTML = productRevenue.map(p => `
+  <tr>
+    <td><strong>${p.name}</strong></td>
+    <td>${p.units}</td>
+    <td><strong style="color:var(--yellow)">${formatPrice(p.revenue)}</strong></td>
+  </tr>
+`).join('');
+</script>
+</body>
+</html>

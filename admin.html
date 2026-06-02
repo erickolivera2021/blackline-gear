@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard — BLACKLINE GEAR</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/admin.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar" id="adminTopbar"></div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:var(--success-dim);color:var(--success)"><i class="fas fa-dollar-sign"></i></div>
+        <div class="stat-card-value" id="statRevenue">R$ 12.450</div>
+        <div class="stat-card-label">RECEITA NO MÊS</div>
+        <div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +18.5% vs mês anterior</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:var(--info-dim);color:var(--info)"><i class="fas fa-shopping-cart"></i></div>
+        <div class="stat-card-value" id="statOrders">47</div>
+        <div class="stat-card-label">PEDIDOS</div>
+        <div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +12% vs mês anterior</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:var(--yellow-10);color:var(--yellow)"><i class="fas fa-users"></i></div>
+        <div class="stat-card-value" id="statCustomers">38</div>
+        <div class="stat-card-label">NOVOS CLIENTES</div>
+        <div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +22% este mês</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:var(--warning-dim);color:var(--warning)"><i class="fas fa-receipt"></i></div>
+        <div class="stat-card-value" id="statAvg">R$ 264,89</div>
+        <div class="stat-card-label">TICKET MÉDIO</div>
+        <div class="stat-card-change up"><i class="fas fa-arrow-up"></i> +5.2%</div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="quick-actions">
+      <a href="admin-produto-form.html" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> NOVO PRODUTO</a>
+      <a href="admin-cupons.html" class="btn btn-ghost btn-sm"><i class="fas fa-ticket"></i> NOVO CUPOM</a>
+      <a href="admin-pedidos.html" class="btn btn-ghost btn-sm"><i class="fas fa-eye"></i> VER PEDIDOS</a>
+      <a href="admin-relatorios.html" class="btn btn-ghost btn-sm"><i class="fas fa-chart-pie"></i> RELATÓRIOS</a>
+    </div>
+
+    <!-- Chart + Recent orders side by side -->
+    <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:24px">
+      <div class="chart-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h3>VENDAS — ÚLTIMOS 6 MESES</h3>
+          <select class="catalog-sort" style="padding:6px 12px;font-size:.75rem">
+            <option>6 meses</option><option>30 dias</option><option>7 dias</option>
+          </select>
+        </div>
+        <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <h3>ÚLTIMOS PEDIDOS</h3>
+        <div id="recentOrders"></div>
+        <a href="admin-pedidos.html" class="btn btn-ghost btn-sm btn-full mt-3">VER TODOS <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <!-- Top products + Low stock -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px">
+      <div class="chart-card">
+        <h3>PRODUTOS MAIS VENDIDOS</h3>
+        <div class="chart-wrap"><canvas id="topProductsChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>⚠️ ESTOQUE BAIXO</h3>
+        <div id="lowStock"></div>
+        <a href="admin-estoque.html" class="btn btn-ghost btn-sm btn-full mt-3">GERENCIAR ESTOQUE <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+renderAdminSidebar('dashboard');
+renderAdminTopbar('Dashboard', '<button class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> EXPORTAR</button>');
+
+// Revenue chart
+const ctx = document.getElementById('revenueChart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ADMIN_STATS.monthlyRevenue.map(m => m.month),
+    datasets: [{
+      label: 'Receita (R$)',
+      data: ADMIN_STATS.monthlyRevenue.map(m => m.value),
+      borderColor: '#FFD400',
+      backgroundColor: 'rgba(255,212,0,0.1)',
+      borderWidth: 3, fill: true, tension: 0.4,
+      pointBackgroundColor: '#FFD400', pointBorderColor: '#000', pointBorderWidth: 2, pointRadius: 5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { ticks: { color: '#8a8a8a', callback: v => 'R$ ' + (v/1000) + 'k' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      x: { ticks: { color: '#8a8a8a' }, grid: { display: false } }
+    }
+  }
+});
+
+// Top products chart (pie)
+new Chart(document.getElementById('topProductsChart').getContext('2d'), {
+  type: 'doughnut',
+  data: {
+    labels: PRODUCTS.map(p => p.shortName),
+    datasets: [{
+      data: [62, 24, 14],
+      backgroundColor: ['#FFD400', '#00C8FF', '#22C55E'],
+      borderColor: '#0c0c10', borderWidth: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'right', labels: { color: '#c8c8cc', font: { size: 12 } } } }
+  }
+});
+
+// Recent orders widget
+document.getElementById('recentOrders').innerHTML = ORDERS.slice(0, 4).map(o => `
+  <div class="recent-order">
+    <div class="avatar avatar-sm">${o.customer.name.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>
+    <div class="recent-order-info">
+      <strong>${o.number} — ${o.customer.name.split(' ')[0]}</strong>
+      <small>${formatPrice(o.total)} • ${formatDate(o.date)}</small>
+    </div>
+    <span class="badge ${getStatusBadge(o.status)}" style="font-size:.6rem;padding:3px 8px">${o.statusLabel}</span>
+  </div>
+`).join('');
+
+// Low stock
+const lowStockProducts = PRODUCTS.filter(p => p.stock < 50);
+document.getElementById('lowStock').innerHTML = lowStockProducts.length ? lowStockProducts.map(p => {
+  const level = p.stock < 20 ? 'critical' : 'low';
+  const pct = Math.min(p.stock / 100 * 100, 100);
+  return `
+  <div class="recent-order">
+    <img src="${p.image}" alt="${p.shortName}" style="width:36px;height:36px;border-radius:var(--r-xs);object-fit:cover" />
+    <div class="recent-order-info">
+      <strong>${p.shortName}</strong>
+      <small>SKU: ${p.sku}</small>
+    </div>
+    <span class="stock-level ${level}">${p.stock} un</span>
+  </div>
+`;}).join('') : '<p class="text-muted" style="text-align:center;padding:20px;font-size:.85rem">✓ Todos os estoques OK</p>';
+</script>
+</body>
+</html>

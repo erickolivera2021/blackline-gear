@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Checkout — BLACKLINE GEAR</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/checkout.css" /><link rel="stylesheet" href="css/premium.css" />
+</head>
+<body>
+
+<!-- Checkout Nav -->
+<div class="checkout-nav"><div class="container checkout-logo">
+  <a href="index.html"><img src="assets/img/logo/blackline-logo.png" alt="Blackline" height="30" /></a>
+  <span class="checkout-secure"><i class="fas fa-lock"></i> Checkout Seguro</span>
+</div></div>
+
+<section class="section" style="padding-top:40px">
+  <div class="container">
+    <!-- Steps indicator -->
+    <div class="checkout-steps" id="stepsBar">
+      <div class="checkout-step active" data-step="1"><span class="step-circle">1</span> Dados</div>
+      <div class="checkout-step" data-step="2"><span class="step-circle">2</span> Endereço</div>
+      <div class="checkout-step" data-step="3"><span class="step-circle">3</span> Frete</div>
+      <div class="checkout-step" data-step="4"><span class="step-circle">4</span> Pagamento</div>
+    </div>
+
+    <div class="checkout-layout">
+      <div>
+        <!-- Step 1: Dados -->
+        <div class="checkout-panel active" id="panel-1">
+          <h2 class="heading-md mb-4">DADOS PESSOAIS</h2>
+          <div class="checkout-form-grid">
+            <div class="input-group span-2"><label class="input-label">Nome completo</label><input class="input" value="Carlos Mendes" /></div>
+            <div class="input-group"><label class="input-label">Email</label><input class="input" type="email" value="carlos@email.com" /></div>
+            <div class="input-group"><label class="input-label">Telefone</label><input class="input" value="(11) 98765-4321" /></div>
+            <div class="input-group"><label class="input-label">CPF</label><input class="input" value="123.456.789-00" /></div>
+          </div>
+          <div class="mt-4" style="display:flex;gap:12px;justify-content:flex-end">
+            <a href="carrinho.html" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Voltar</a>
+            <button class="btn btn-primary step-next" data-next="2">CONTINUAR <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 2: Endereço -->
+        <div class="checkout-panel" id="panel-2">
+          <h2 class="heading-md mb-4">ENDEREÇO DE ENTREGA</h2>
+          <div class="checkout-form-grid">
+            <div class="input-group"><label class="input-label">CEP</label><input class="input" value="01304-001" /></div>
+            <div class="input-group"><label class="input-label">Cidade / UF</label><input class="input" value="São Paulo / SP" disabled /></div>
+            <div class="input-group span-2"><label class="input-label">Rua</label><input class="input" value="Rua Augusta" /></div>
+            <div class="input-group"><label class="input-label">Número</label><input class="input" value="1200" /></div>
+            <div class="input-group"><label class="input-label">Complemento</label><input class="input" value="Apto 42" /></div>
+            <div class="input-group span-2"><label class="input-label">Bairro</label><input class="input" value="Consolação" /></div>
+          </div>
+          <div class="mt-4" style="display:flex;gap:12px;justify-content:flex-end">
+            <button class="btn btn-ghost step-next" data-next="1"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <button class="btn btn-primary step-next" data-next="3">CONTINUAR <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Frete -->
+        <div class="checkout-panel" id="panel-3">
+          <h2 class="heading-md mb-4">OPÇÃO DE FRETE</h2>
+          <label class="shipping-option selected"><input type="radio" name="ship" value="pac" checked /><div class="shipping-option-info"><strong>PAC — Correios</strong><small>5 a 8 dias úteis</small></div><span class="shipping-option-price free">GRÁTIS</span></label>
+          <label class="shipping-option"><input type="radio" name="ship" value="sedex" /><div class="shipping-option-info"><strong>SEDEX — Correios</strong><small>2 a 3 dias úteis</small></div><span class="shipping-option-price">R$ 18,90</span></label>
+          <label class="shipping-option"><input type="radio" name="ship" value="jadlog" /><div class="shipping-option-info"><strong>JadLog — Transportadora</strong><small>4 a 6 dias úteis</small></div><span class="shipping-option-price">R$ 12,50</span></label>
+          <div class="mt-4" style="display:flex;gap:12px;justify-content:flex-end">
+            <button class="btn btn-ghost step-next" data-next="2"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <button class="btn btn-primary step-next" data-next="4">CONTINUAR <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 4: Pagamento -->
+        <div class="checkout-panel" id="panel-4">
+          <h2 class="heading-md mb-4">FORMA DE PAGAMENTO</h2>
+          <label class="payment-option selected"><input type="radio" name="pay" value="pix" checked /><i class="fab fa-pix"></i><div class="payment-option-info"><strong>PIX</strong><small>Aprovação instantânea • 5% de desconto</small></div></label>
+          <label class="payment-option"><input type="radio" name="pay" value="card" /><i class="far fa-credit-card"></i><div class="payment-option-info"><strong>Cartão de Crédito</strong><small>Até 12x sem juros</small></div></label>
+          <label class="payment-option"><input type="radio" name="pay" value="boleto" /><i class="fas fa-barcode"></i><div class="payment-option-info"><strong>Boleto Bancário</strong><small>Aprovação em 1-3 dias úteis</small></div></label>
+
+          <div id="pixBox" class="mt-3" style="text-align:center;padding:24px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r-md)">
+            <i class="fab fa-pix" style="font-size:3rem;color:var(--success);margin-bottom:12px;display:block"></i>
+            <p style="font-size:.85rem;color:var(--muted)">O QR Code PIX será gerado após finalizar o pedido.</p>
+            <p style="font-size:.9rem;margin-top:8px"><strong style="color:var(--success)">5% de desconto no PIX!</strong></p>
+          </div>
+
+          <div class="mt-4" style="display:flex;gap:12px;justify-content:flex-end">
+            <button class="btn btn-ghost step-next" data-next="3"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <a href="checkout-sucesso.html" class="btn btn-primary btn-lg" id="finishOrder"><i class="fas fa-lock"></i> FINALIZAR PEDIDO</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="checkout-order-summary">
+        <h3 class="heading-md mb-3">RESUMO</h3>
+        <div id="checkoutItems"></div>
+        <div class="divider mt-2 mb-2"></div>
+        <div class="cart-summary-row"><span>Subtotal</span><strong id="coSub">R$ 0</strong></div>
+        <div class="cart-summary-row"><span>Frete</span><strong id="coShip" style="color:var(--success)">GRÁTIS</strong></div>
+        <div class="cart-summary-row total"><span>TOTAL</span><strong id="coTotal">R$ 0</strong></div>
+        <p class="installments mt-1" id="coInst"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+<!-- Hidden cart elements for app.js -->
+<span id="cartCount" style="display:none"></span><span id="cartHeadCount" style="display:none"></span><span id="cartSubtotal" style="display:none"></span><span id="cartTotal" style="display:none"></span><span id="cartInstallments" style="display:none"></span><span id="cartEmpty" style="display:none"></span><span id="cartFoot" style="display:none"></span><ul id="cartItems" style="display:none"></ul>
+
+<script src="js/mock-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script><script src="js/app.js"></script><script src="js/premium.js"></script>
+<script>
+// Render checkout items
+const cItems = document.getElementById('checkoutItems');
+if (cItems) {
+  cItems.innerHTML = cart.map(i => `
+    <div class="checkout-order-item">
+      <img src="${i.image}" alt="${i.name}" />
+      <div class="checkout-order-item-info"><span>${i.name}</span><small>Qtd: ${i.qty}</small></div>
+      <span class="checkout-order-item-price">${formatPrice(i.price * i.qty)}</span>
+    </div>
+  `).join('');
+}
+const sub = cart.reduce((s,i) => s + i.price*i.qty, 0);
+document.getElementById('coSub').textContent = formatPrice(sub);
+document.getElementById('coTotal').textContent = formatPrice(sub);
+document.getElementById('coInst').innerHTML = `ou 12x de <strong>${formatPrice(sub/12)}</strong>`;
+
+// Steps navigation
+let currentStep = 1;
+function goToStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.checkout-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + n)?.classList.add('active');
+  document.querySelectorAll('.checkout-step').forEach(s => {
+    const sn = +s.dataset.step;
+    s.classList.remove('active','done');
+    if (sn === n) s.classList.add('active');
+    else if (sn < n) s.classList.add('done');
+  });
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+document.querySelectorAll('.step-next').forEach(btn => {
+  btn.addEventListener('click', () => goToStep(+btn.dataset.next));
+});
+
+// Shipping options highlight
+document.querySelectorAll('.shipping-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.shipping-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+  });
+});
+
+// Payment options highlight
+document.querySelectorAll('.payment-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    document.getElementById('pixBox').style.display = opt.querySelector('input').value === 'pix' ? '' : 'none';
+  });
+});
+
+// Finish order — save to localStorage as mock order
+document.getElementById('finishOrder')?.addEventListener('click', () => {
+  const mockOrder = { id: 1043 + Math.floor(Math.random()*100), items: [...cart], total: sub, date: new Date().toISOString().split('T')[0], status: 'paid' };
+  localStorage.setItem('bl_last_order', JSON.stringify(mockOrder));
+  cart = []; saveCart(); renderCart();
+});
+</script>
+</body>
+</html>

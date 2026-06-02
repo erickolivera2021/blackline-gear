@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Estoque — Admin BLACKLINE</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar" id="adminTopbar"></div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--success-dim);color:var(--success)"><i class="fas fa-boxes-stacked"></i></div><div class="stat-card-value" id="totalStock">0</div><div class="stat-card-label">UNIDADES EM ESTOQUE</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--warning-dim);color:var(--warning)"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-card-value" id="lowStockCount">0</div><div class="stat-card-label">PRODUTOS COM ESTOQUE BAIXO</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--danger-dim);color:var(--danger)"><i class="fas fa-circle-exclamation"></i></div><div class="stat-card-value" id="criticalStockCount">0</div><div class="stat-card-label">ESTOQUE CRÍTICO</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--yellow-10);color:var(--yellow)"><i class="fas fa-dollar-sign"></i></div><div class="stat-card-value" id="stockValue">R$ 0</div><div class="stat-card-label">VALOR EM ESTOQUE</div></div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="quick-actions">
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('movementModal').classList.add('open')"><i class="fas fa-plus"></i> NOVA MOVIMENTAÇÃO</button>
+      <button class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> EXPORTAR INVENTÁRIO</button>
+      <button class="btn btn-ghost btn-sm"><i class="fas fa-print"></i> IMPRIMIR ETIQUETAS</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Produto</th><th>SKU</th><th>Estoque atual</th><th>Mínimo</th><th>Status</th><th>Valor estoque</th><th>Ações</th></tr></thead>
+        <tbody id="stockTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Movements history -->
+    <h2 class="heading-md mt-5 mb-3">HISTÓRICO DE MOVIMENTAÇÕES</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Data</th><th>Produto</th><th>Tipo</th><th>Quantidade</th><th>Motivo</th><th>Responsável</th></tr></thead>
+        <tbody>
+          <tr><td>28/05/2026</td><td>X-PUMP 120PSI</td><td><span class="badge badge-danger">Saída</span></td><td>-1</td><td>Pedido #BL-1042</td><td>Sistema</td></tr>
+          <tr><td>27/05/2026</td><td>Kit No Flat</td><td><span class="badge badge-danger">Saída</span></td><td>-1</td><td>Pedido #BL-1041</td><td>Sistema</td></tr>
+          <tr><td>26/05/2026</td><td>Nano Tube TPU</td><td><span class="badge badge-danger">Saída</span></td><td>-2</td><td>Pedido #BL-1040</td><td>Sistema</td></tr>
+          <tr><td>25/05/2026</td><td>X-PUMP 120PSI</td><td><span class="badge badge-success">Entrada</span></td><td>+50</td><td>Reposição fornecedor</td><td>Admin</td></tr>
+          <tr><td>20/05/2026</td><td>Nano Tube TPU</td><td><span class="badge badge-success">Entrada</span></td><td>+100</td><td>Lote inicial</td><td>Admin</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Movement Modal -->
+<div class="modal-overlay" id="movementModal">
+  <div class="modal">
+    <div class="modal-header"><h3>NOVA MOVIMENTAÇÃO</h3><button class="modal-close" onclick="closeModal('movementModal')">×</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="input-group"><label class="input-label">Produto</label><select class="input" id="mProd">${''}</select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="input-group"><label class="input-label">Tipo</label><select class="input"><option>Entrada</option><option>Saída</option><option>Ajuste</option></select></div>
+          <div class="input-group"><label class="input-label">Quantidade</label><input class="input" type="number" placeholder="0" /></div>
+        </div>
+        <div class="input-group"><label class="input-label">Motivo</label><input class="input" placeholder="Ex: Reposição fornecedor" /></div>
+        <div class="input-group"><label class="input-label">Observações</label><textarea class="input" rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('movementModal')">CANCELAR</button>
+      <button class="btn btn-primary" onclick="closeModal('movementModal');showToastMsg('Movimentação registrada!')"><i class="fas fa-check"></i> REGISTRAR</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+renderAdminSidebar('estoque');
+renderAdminTopbar('Controle de Estoque');
+
+const totalStock = PRODUCTS.reduce((s,p) => s + p.stock, 0);
+const stockValue = PRODUCTS.reduce((s,p) => s + (p.stock * p.price), 0);
+const lowStock = PRODUCTS.filter(p => p.stock < 50 && p.stock >= 20).length;
+const criticalStock = PRODUCTS.filter(p => p.stock < 20).length;
+
+document.getElementById('totalStock').textContent = totalStock;
+document.getElementById('stockValue').textContent = formatPrice(stockValue);
+document.getElementById('lowStockCount').textContent = lowStock;
+document.getElementById('criticalStockCount').textContent = criticalStock;
+
+document.getElementById('mProd').innerHTML = PRODUCTS.map(p => `<option>${p.shortName}</option>`).join('');
+
+document.getElementById('stockTable').innerHTML = PRODUCTS.map(p => {
+  const level = p.stock < 20 ? 'critical' : p.stock < 50 ? 'low' : 'ok';
+  const statusBadge = p.stock < 20 ? '<span class="badge badge-danger">Crítico</span>' : p.stock < 50 ? '<span class="badge badge-warning">Baixo</span>' : '<span class="badge badge-success">OK</span>';
+  const pct = Math.min(p.stock / 100 * 100, 100);
+  return `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:12px">
+        <img src="${p.image}" alt="${p.shortName}" style="width:40px;height:40px;border-radius:var(--r-xs);object-fit:cover" />
+        <strong>${p.shortName}</strong>
+      </div></td>
+      <td><code style="font-family:var(--font-mono);font-size:.78rem">${p.sku}</code></td>
+      <td><div class="stock-bar">
+        <span class="stock-level ${level}">${p.stock}</span>
+        <div class="progress" style="flex:1;max-width:120px"><div class="progress-fill" style="width:${pct}%;background:${level === 'critical' ? 'var(--danger)' : level === 'low' ? 'var(--warning)' : 'var(--success)'}"></div></div>
+      </div></td>
+      <td>10</td>
+      <td>${statusBadge}</td>
+      <td><strong style="color:var(--yellow)">${formatPrice(p.stock * p.price)}</strong></td>
+      <td><div class="table-actions">
+        <button class="edit" title="Editar estoque" onclick="document.getElementById('movementModal').classList.add('open')"><i class="fas fa-pen"></i></button>
+        <button class="view" title="Histórico"><i class="fas fa-clock-rotate-left"></i></button>
+      </div></td>
+    </tr>
+  `;
+}).join('');
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToastMsg(m) { const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+</script>
+</body>
+</html>

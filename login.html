@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login — BLACKLINE GEAR</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/checkout.css" /><link rel="stylesheet" href="css/premium.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo"><a href="index.html"><img src="assets/img/logo/blackline-logo.png" alt="Blackline" height="32" /></a></div>
+    <h1 class="auth-title">BEM-VINDO DE VOLTA</h1>
+    <p class="auth-subtitle">Entre na sua conta para continuar</p>
+    <form class="auth-form" id="loginForm">
+      <div class="input-group"><label class="input-label">Email</label><input class="input" type="email" placeholder="seu@email.com" required /></div>
+      <div class="input-group"><label class="input-label">Senha</label><input class="input" type="password" placeholder="••••••••" required /></div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <label class="checkbox-row" style="font-size:.82rem"><input type="checkbox" checked /> Lembrar de mim</label>
+        <a href="recuperar-senha.html" style="font-size:.82rem;color:var(--yellow)">Esqueci a senha</a>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">ENTRAR <i class="fas fa-arrow-right"></i></button>
+    </form>
+    <div class="auth-divider">ou continue com</div>
+    <div class="auth-social">
+      <button type="button"><i class="fab fa-google"></i> Google</button>
+      <button type="button">Convidado</button>
+    </div>
+    <p class="auth-footer">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+  </div>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  localStorage.setItem('bl_user', JSON.stringify({name:'Carlos Mendes',email:'carlos@email.com',initials:'CM'}));
+  window.location.href = 'conta.html';
+});
+</script>
+</body>
+</html>

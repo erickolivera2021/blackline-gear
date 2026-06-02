@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recuperar Senha — BLACKLINE GEAR</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/checkout.css" /><link rel="stylesheet" href="css/premium.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo"><a href="index.html"><img src="assets/img/logo/blackline-logo.png" alt="Blackline" height="32" /></a></div>
+    <h1 class="auth-title">RECUPERAR SENHA</h1>
+    <p class="auth-subtitle">Informe seu email e enviaremos um link para redefinir sua senha.</p>
+    <form class="auth-form" id="resetForm">
+      <div class="input-group"><label class="input-label">Email cadastrado</label><input class="input" type="email" placeholder="seu@email.com" required id="resetEmail" /></div>
+      <button type="submit" class="btn btn-primary btn-full" id="resetBtn">ENVIAR LINK <i class="fas fa-paper-plane"></i></button>
+    </form>
+    <div id="resetSuccess" style="display:none;text-align:center;margin-top:20px">
+      <i class="fas fa-envelope-circle-check" style="font-size:3rem;color:var(--success);display:block;margin-bottom:12px"></i>
+      <h3 class="heading-sm">EMAIL ENVIADO!</h3>
+      <p class="text-muted mt-1" style="font-size:.88rem">Verifique sua caixa de entrada e siga as instruções para criar uma nova senha.</p>
+    </div>
+    <p class="auth-footer">Lembrou a senha? <a href="login.html">Entrar</a></p>
+  </div>
+</div>
+<script>
+document.getElementById('resetForm').addEventListener('submit', e => {
+  e.preventDefault();
+  e.target.style.display = 'none';
+  document.getElementById('resetSuccess').style.display = '';
+});
+</script>
+</body>
+</html>

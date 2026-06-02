@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cadastrar Produto — Admin BLACKLINE</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar" id="adminTopbar"></div>
+
+    <form class="admin-form" id="prodForm">
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start">
+        <div>
+          <h3 class="heading-md mb-3">INFORMAÇÕES BÁSICAS</h3>
+          <div class="admin-form-grid">
+            <div class="input-group span-2"><label class="input-label">Nome do produto</label><input class="input" placeholder="Ex: X-PUMP 120PSI" required id="fName" /></div>
+            <div class="input-group"><label class="input-label">SKU</label><input class="input" placeholder="BL-XXX000" required id="fSku" /></div>
+            <div class="input-group"><label class="input-label">Categoria</label><select class="input" id="fCat"><option>Infladores</option><option>Kits</option><option>Câmaras de ar</option><option>Acessórios</option></select></div>
+            <div class="input-group span-2"><label class="input-label">Descrição curta</label><input class="input" placeholder="Resumo do produto" id="fShort" /></div>
+            <div class="input-group span-2"><label class="input-label">Descrição completa</label><textarea class="input" rows="5" placeholder="Descrição detalhada..." id="fDesc"></textarea></div>
+          </div>
+
+          <h3 class="heading-md mt-5 mb-3">PREÇO E ESTOQUE</h3>
+          <div class="admin-form-grid">
+            <div class="input-group"><label class="input-label">Preço (R$)</label><input class="input" type="number" step="0.01" placeholder="0,00" id="fPrice" required /></div>
+            <div class="input-group"><label class="input-label">Preço comparativo (R$)</label><input class="input" type="number" step="0.01" placeholder="0,00 (opcional)" /></div>
+            <div class="input-group"><label class="input-label">Estoque atual</label><input class="input" type="number" placeholder="0" id="fStock" required /></div>
+            <div class="input-group"><label class="input-label">Estoque mínimo (alerta)</label><input class="input" type="number" placeholder="10" /></div>
+          </div>
+
+          <h3 class="heading-md mt-5 mb-3">ESPECIFICAÇÕES</h3>
+          <div id="specsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="addSpec()"><i class="fas fa-plus"></i> ADICIONAR ESPECIFICAÇÃO</button>
+
+          <h3 class="heading-md mt-5 mb-3">DIMENSÕES (envio)</h3>
+          <div class="admin-form-grid">
+            <div class="input-group"><label class="input-label">Peso (kg)</label><input class="input" type="number" step="0.001" placeholder="0,124" /></div>
+            <div class="input-group"><label class="input-label">Comprimento (cm)</label><input class="input" type="number" placeholder="0" /></div>
+            <div class="input-group"><label class="input-label">Largura (cm)</label><input class="input" type="number" placeholder="0" /></div>
+            <div class="input-group"><label class="input-label">Altura (cm)</label><input class="input" type="number" placeholder="0" /></div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="heading-md mb-3">IMAGENS</h3>
+          <label class="admin-img-upload" id="mainImgUpload">
+            <input type="file" accept="image/*" hidden onchange="previewImg(event,'mainImgUpload')" />
+            <i class="fas fa-cloud-arrow-up"></i>
+            <span style="font-size:.85rem">Clique ou arraste a imagem principal</span>
+            <small style="font-size:.72rem">JPG, PNG ou WEBP até 2MB</small>
+          </label>
+
+          <h4 class="heading-sm mt-3 mb-2">GALERIA (3 imagens adicionais)</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <label class="admin-img-upload" style="aspect-ratio:1;max-width:none"><i class="fas fa-plus"></i></label>
+            <label class="admin-img-upload" style="aspect-ratio:1;max-width:none"><i class="fas fa-plus"></i></label>
+            <label class="admin-img-upload" style="aspect-ratio:1;max-width:none"><i class="fas fa-plus"></i></label>
+          </div>
+
+          <h3 class="heading-md mt-5 mb-3">CONFIGURAÇÕES</h3>
+          <label class="checkbox-row mb-2"><input type="checkbox" checked /> Produto ativo</label>
+          <label class="checkbox-row mb-2"><input type="checkbox" /> Em destaque na home</label>
+          <label class="checkbox-row mb-2"><input type="checkbox" /> Frete grátis</label>
+          <label class="checkbox-row mb-2"><input type="checkbox" /> Mais vendido</label>
+
+          <div class="input-group mt-3"><label class="input-label">Tag/Badge</label><input class="input" placeholder="Ex: Mais vendido, Novo, -20%" /></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:40px;padding-top:24px;border-top:1px solid var(--border)">
+        <a href="admin-produtos.html" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> CANCELAR</a>
+        <button type="button" class="btn btn-outline" onclick="saveProduct(true)"><i class="fas fa-save"></i> SALVAR RASCUNHO</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> SALVAR E PUBLICAR</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+renderAdminSidebar('produtos');
+
+// If editing, populate
+const params = new URLSearchParams(window.location.search);
+const editId = params.get('id');
+const editProduct = editId ? PRODUCTS.find(p => p.id === editId) : null;
+
+renderAdminTopbar(editProduct ? 'Editar Produto' : 'Novo Produto', '<a href="admin-produtos.html" class="btn btn-ghost btn-sm"><i class="fas fa-arrow-left"></i> VOLTAR</a>');
+
+if (editProduct) {
+  document.getElementById('fName').value = editProduct.shortName;
+  document.getElementById('fSku').value = editProduct.sku;
+  document.getElementById('fCat').value = editProduct.category;
+  document.getElementById('fShort').value = editProduct.shortDesc;
+  document.getElementById('fDesc').value = editProduct.description;
+  document.getElementById('fPrice').value = editProduct.price;
+  document.getElementById('fStock').value = editProduct.stock;
+  // Specs
+  Object.entries(editProduct.specs).forEach(([k,v]) => addSpec(k,v));
+} else {
+  addSpec(); addSpec();
+}
+
+function addSpec(k='', v='') {
+  const list = document.getElementById('specsList');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 1.5fr auto;gap:8px';
+  row.innerHTML = `
+    <input class="input" placeholder="Característica (ex: Peso)" value="${k}" />
+    <input class="input" placeholder="Valor (ex: 124g)" value="${v}" />
+    <button type="button" class="btn-icon" onclick="this.parentElement.remove()" style="border-color:var(--border-2)"><i class="fas fa-trash"></i></button>
+  `;
+  list.appendChild(row);
+}
+
+function previewImg(e, id) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const el = document.getElementById(id);
+    el.innerHTML = `<img src="${ev.target.result}" alt="Preview" />`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveProduct(draft) {
+  showToastMsg(draft ? 'Rascunho salvo!' : 'Produto publicado!');
+  setTimeout(() => window.location.href = 'admin-produtos.html', 1500);
+}
+
+function showToastMsg(m) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = m;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+document.getElementById('prodForm').addEventListener('submit', e => { e.preventDefault(); saveProduct(false); });
+</script>
+</body>
+</html>

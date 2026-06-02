@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Página não encontrada — BLACKLINE GEAR</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" />
+<style>
+.error-page { min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;text-align:center;position:relative;overflow:hidden }
+.error-page::before { content:'';position:absolute;top:-30%;right:-20%;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(255,212,0,.08) 0%,transparent 60%);pointer-events:none }
+.error-404 { font-family:var(--font-display);font-size:clamp(8rem,25vw,18rem);line-height:.85;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:2px var(--yellow);margin-bottom:24px;animation:glitch 4s infinite }
+@keyframes glitch { 0%,90%,100%{transform:translate(0)} 92%{transform:translate(-2px,2px)} 94%{transform:translate(2px,-2px)} 96%{transform:translate(-2px,-2px)} 98%{transform:translate(2px,2px)} }
+.error-content { position:relative;z-index:1;max-width:560px }
+.error-suggest { margin-top:48px;display:flex;flex-direction:column;gap:8px;text-align:left;max-width:340px;margin-left:auto;margin-right:auto }
+.error-suggest-link { display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm);transition:all .3s;color:var(--fg-2);font-size:.9rem }
+.error-suggest-link:hover { border-color:var(--border-yellow);transform:translateX(4px);color:var(--yellow) }
+.error-suggest-link i { color:var(--yellow);width:20px }
+</style>
+</head>
+<body>
+<div class="error-page">
+  <div class="error-content">
+    <div class="error-404">404</div>
+    <h1 class="heading-xl mb-3">PÁGINA <span class="text-outline">NÃO ENCONTRADA</span></h1>
+    <p class="text-muted mb-4">A página que você está procurando não existe ou foi movida. Que tal voltar para o início e continuar explorando?</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="index.html" class="btn btn-primary"><i class="fas fa-house"></i> VOLTAR AO INÍCIO</a>
+      <a href="produtos.html" class="btn btn-ghost"><i class="fas fa-bag-shopping"></i> VER PRODUTOS</a>
+    </div>
+
+    <div class="error-suggest">
+      <p style="font-size:.78rem;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Páginas populares</p>
+      <a href="produto-xpump.html" class="error-suggest-link"><i class="fas fa-bolt"></i> X-PUMP 120PSI — R$ 579</a>
+      <a href="produto-kit.html" class="error-suggest-link"><i class="fas fa-box"></i> Kit No Flat — R$ 688</a>
+      <a href="produto-nanotube.html" class="error-suggest-link"><i class="fas fa-feather"></i> Nano Tube TPU — R$ 109</a>
+      <a href="faq.html" class="error-suggest-link"><i class="fas fa-circle-question"></i> FAQ</a>
+      <a href="contato.html" class="error-suggest-link"><i class="fas fa-envelope"></i> Fale conosco</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

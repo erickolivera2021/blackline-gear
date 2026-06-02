@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Detalhe do Pedido — Admin BLACKLINE</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/admin.css" /><link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar" id="adminTopbar"></div>
+
+    <div id="orderDetail"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+renderAdminSidebar('pedidos');
+
+const params = new URLSearchParams(window.location.search);
+const orderId = parseInt(params.get('id')) || 1042;
+const order = ORDERS.find(o => o.id === orderId) || ORDERS[0];
+
+renderAdminTopbar(`Pedido ${order.number}`, `<a href="admin-pedidos.html" class="btn btn-ghost btn-sm"><i class="fas fa-arrow-left"></i> VOLTAR</a>`);
+
+const statuses = [
+  { id: 'pending', label: 'Pendente', icon: 'fa-clock' },
+  { id: 'paid', label: 'Pago', icon: 'fa-check' },
+  { id: 'shipped', label: 'Enviado', icon: 'fa-truck' },
+  { id: 'delivered', label: 'Entregue', icon: 'fa-house' }
+];
+
+document.getElementById('orderDetail').innerHTML = `
+  <!-- Status timeline -->
+  <div class="card" style="padding:24px;border-radius:var(--r-md);margin-bottom:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 class="heading-md">STATUS DO PEDIDO</h3>
+      <span class="badge ${getStatusBadge(order.status)}" style="font-size:.8rem;padding:6px 16px">${order.statusLabel}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0">
+      ${statuses.map((s, i) => {
+        const currIdx = statuses.findIndex(x => x.id === order.status);
+        const done = i <= currIdx && order.status !== 'cancelled';
+        return `
+        <div style="flex:1;text-align:center;position:relative">
+          <div style="width:48px;height:48px;border-radius:50%;background:${done?'var(--yellow)':'var(--bg-3)'};color:${done?'#000':'var(--muted)'};display:grid;place-items:center;margin:0 auto;font-size:1rem;border:2px solid ${done?'var(--yellow)':'var(--border-2)'}"><i class="fas ${s.icon}"></i></div>
+          <div style="font-size:.78rem;margin-top:8px;font-weight:600;color:${done?'var(--fg)':'var(--muted)'}">${s.label}</div>
+          ${i < statuses.length-1 ? `<div style="position:absolute;top:24px;left:60%;right:-40%;height:2px;background:${done&&i<currIdx?'var(--yellow)':'var(--border)'}"></div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px">
+    <!-- Left: items + customer -->
+    <div>
+      <div class="card" style="padding:24px;border-radius:var(--r-md);margin-bottom:16px">
+        <h3 class="heading-md mb-3">ITENS</h3>
+        ${order.items.map(i => `
+          <div style="display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)">
+            <img src="${i.image}" alt="${i.name}" style="width:64px;height:64px;border-radius:var(--r-xs);object-fit:cover" />
+            <div style="flex:1"><strong>${i.name}</strong><br><small class="text-muted">Qtd: ${i.qty} × ${formatPrice(i.price)}</small></div>
+            <span style="font-family:var(--font-display);font-size:1.3rem;color:var(--yellow)">${formatPrice(i.price * i.qty)}</span>
+          </div>
+        `).join('')}
+        <div class="mt-3">
+          <div class="cart-summary-row"><span>Subtotal</span><strong>${formatPrice(order.subtotal)}</strong></div>
+          <div class="cart-summary-row"><span>Frete</span><strong style="color:var(--success)">GRÁTIS</strong></div>
+          ${order.discount ? `<div class="cart-summary-row"><span>Desconto ${order.coupon ? '('+order.coupon+')' : ''}</span><strong style="color:var(--success)">-${formatPrice(order.discount)}</strong></div>` : ''}
+          <div class="cart-summary-row total"><span>TOTAL</span><strong>${formatPrice(order.total)}</strong></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px;border-radius:var(--r-md);margin-bottom:16px">
+        <h3 class="heading-md mb-3">CLIENTE</h3>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="avatar avatar-lg">${order.customer.name.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>
+          <div>
+            <strong style="font-size:1rem">${order.customer.name}</strong><br>
+            <small class="text-muted">${order.customer.email}</small><br>
+            <small class="text-muted">${order.customer.phone}</small>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:8px">
+            <a href="https://wa.me/${order.customer.phone.replace(/\D/g,'')}" target="_blank" class="btn btn-ghost btn-sm" style="color:#25D366"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
+            <a href="mailto:${order.customer.email}" class="btn btn-ghost btn-sm"><i class="fas fa-envelope"></i> EMAIL</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px;border-radius:var(--r-md)">
+        <h3 class="heading-md mb-3">ENDEREÇO DE ENTREGA</h3>
+        <p style="line-height:1.7">
+          ${order.address.street}, ${order.address.number} ${order.address.complement ? '— '+order.address.complement : ''}<br>
+          ${order.address.neighborhood} — ${order.address.city}/${order.address.state}<br>
+          CEP: ${order.address.zip}
+        </p>
+      </div>
+    </div>
+
+    <!-- Right: actions -->
+    <div>
+      <div class="card" style="padding:24px;border-radius:var(--r-md);margin-bottom:16px">
+        <h3 class="heading-md mb-3">AÇÕES</h3>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-primary" onclick="showToastMsg('Status atualizado!')"><i class="fas fa-check"></i> MARCAR COMO PAGO</button>
+          <button class="btn btn-ghost" onclick="showToastMsg('Pedido enviado!')"><i class="fas fa-truck"></i> MARCAR COMO ENVIADO</button>
+          <div class="input-group"><label class="input-label">Código de rastreio</label><input class="input" placeholder="BR123456789BR" value="${order.tracking || ''}" /></div>
+          <button class="btn btn-ghost" onclick="showToastMsg('Email enviado ao cliente!')"><i class="fas fa-envelope"></i> NOTIFICAR CLIENTE</button>
+          <button class="btn btn-danger" onclick="showToastMsg('Pedido cancelado')"><i class="fas fa-times"></i> CANCELAR PEDIDO</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px;border-radius:var(--r-md)">
+        <h3 class="heading-md mb-3">INFORMAÇÕES</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:.85rem">
+          <div><span class="text-muted">Data:</span> <strong>${formatDate(order.date)}</strong></div>
+          <div><span class="text-muted">Pagamento:</span> <strong>${order.payment}</strong></div>
+          ${order.tracking ? `<div><span class="text-muted">Rastreio:</span> <strong>${order.tracking}</strong></div>` : ''}
+          ${order.coupon ? `<div><span class="text-muted">Cupom:</span> <strong style="color:var(--yellow)">${order.coupon}</strong></div>` : ''}
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px;border-radius:var(--r-md);margin-top:16px">
+        <h3 class="heading-md mb-3">NOTAS INTERNAS</h3>
+        <textarea class="input" rows="4" placeholder="Adicione uma nota interna..."></textarea>
+        <button class="btn btn-ghost btn-sm btn-full mt-2">SALVAR NOTA</button>
+      </div>
+    </div>
+  </div>
+`;
+
+function showToastMsg(m) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = m;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>

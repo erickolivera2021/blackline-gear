@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cadastro — BLACKLINE GEAR</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/checkout.css" /><link rel="stylesheet" href="css/premium.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo"><a href="index.html"><img src="assets/img/logo/blackline-logo.png" alt="Blackline" height="32" /></a></div>
+    <h1 class="auth-title">CRIAR CONTA</h1>
+    <p class="auth-subtitle">Junte-se à comunidade Blackline</p>
+    <form class="auth-form" id="signupForm">
+      <div class="input-group"><label class="input-label">Nome completo</label><input class="input" placeholder="Seu nome" required /></div>
+      <div class="input-group"><label class="input-label">Email</label><input class="input" type="email" placeholder="seu@email.com" required /></div>
+      <div class="input-group"><label class="input-label">Telefone</label><input class="input" type="tel" placeholder="(11) 99999-9999" /></div>
+      <div class="input-group"><label class="input-label">CPF</label><input class="input" placeholder="000.000.000-00" /></div>
+      <div class="input-group"><label class="input-label">Senha</label><input class="input" type="password" placeholder="Mínimo 8 caracteres" required /></div>
+      <div class="input-group"><label class="input-label">Confirmar senha</label><input class="input" type="password" placeholder="Repita a senha" required /></div>
+      <label class="checkbox-row" style="font-size:.82rem"><input type="checkbox" required /> Li e aceito os <a href="#" style="color:var(--yellow)">Termos de Uso</a> e <a href="#" style="color:var(--yellow)">Política de Privacidade</a></label>
+      <button type="submit" class="btn btn-primary btn-full">CRIAR CONTA <i class="fas fa-arrow-right"></i></button>
+    </form>
+    <div class="auth-divider">ou cadastre-se com</div>
+    <div class="auth-social"><button type="button"><i class="fab fa-google"></i> Google</button></div>
+    <p class="auth-footer">Já tem conta? <a href="login.html">Entrar</a></p>
+  </div>
+</div>
+<script>
+document.getElementById('signupForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = e.target.querySelector('input').value;
+  const initials = name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  localStorage.setItem('bl_user', JSON.stringify({name, email:'novo@email.com', initials}));
+  window.location.href = 'conta.html';
+});
+</script>
+</body>
+</html>

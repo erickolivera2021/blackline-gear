@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meus Pedidos — BLACKLINE GEAR</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/checkout.css" /><link rel="stylesheet" href="css/premium.css" />
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+<nav class="nav" id="nav"><div class="nav-inner">
+  <a href="index.html" class="nav-logo"><img src="assets/img/logo/blackline-logo.png" alt="Blackline" height="34" /></a>
+  <ul class="nav-links"><li><a href="index.html" class="nav-link">Início</a></li><li><a href="produtos.html" class="nav-link">Produtos</a></li><li><a href="sobre.html" class="nav-link">Sobre</a></li><li><a href="faq.html" class="nav-link">FAQ</a></li><li><a href="contato.html" class="nav-link">Contato</a></li></ul>
+  <div class="nav-actions"><button class="theme-toggle" aria-label="Alternar tema"><i class="fas fa-moon icon icon-moon"></i><i class="fas fa-sun icon icon-sun"></i></button><button class="nav-cart" id="openCart"><i class="fas fa-shopping-bag"></i><span class="nav-cart-count" id="cartCount">0</span></button><button class="nav-burger" id="burger"><span></span><span></span><span></span></button></div>
+</div></nav>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<div class="mobile-menu" id="mobileMenu"><div class="mobile-menu-links"><a href="index.html">Início</a><a href="produtos.html">Produtos</a><a href="conta.html">Conta</a></div></div>
+
+<div class="page-header"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Início</a><span class="sep">/</span><a href="conta.html">Conta</a><span class="sep">/</span><span>Pedidos</span></div>
+  <h1>MEUS <span class="text-outline">PEDIDOS</span></h1>
+</div></div>
+
+<section class="section">
+  <div class="container account-layout">
+    <aside class="account-sidebar">
+      <div class="account-sidebar-user"><div class="avatar avatar-lg">CM</div><h3 class="heading-sm mt-1">Carlos Mendes</h3></div>
+      <nav class="account-sidebar-nav">
+        <a href="conta.html"><i class="fas fa-user"></i> Perfil</a>
+        <a href="pedidos.html" class="active"><i class="fas fa-box"></i> Meus Pedidos</a>
+        <a href="desejos.html"><i class="fas fa-heart"></i> Desejos</a>
+        <a href="login.html" style="color:var(--danger)"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      </nav>
+    </aside>
+
+    <div>
+      <div id="ordersList"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom" style="border:none"><p>© 2026 BLACKLINE GEAR</p></div></div></footer>
+<div class="cart-overlay" id="cartOverlay"></div><aside class="cart-drawer" id="cartDrawer" style="display:none"></aside>
+<span id="cartHeadCount" style="display:none"></span><span id="cartSubtotal" style="display:none"></span><span id="cartTotal" style="display:none"></span><span id="cartInstallments" style="display:none"></span><span id="cartEmpty" style="display:none"></span><span id="cartFoot" style="display:none"></span><ul id="cartItems" style="display:none"></ul>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script><script src="js/app.js"></script><script src="js/premium.js"></script>
+<script>
+const ol = document.getElementById('ordersList');
+ol.innerHTML = ORDERS.map(o => `
+  <a href="pedido-detalhe.html?id=${o.id}" class="order-card">
+    <div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <strong style="font-family:var(--font-mono);letter-spacing:.08em">${o.number}</strong>
+        <span class="badge ${getStatusBadge(o.status)}">${o.statusLabel}</span>
+      </div>
+      <div style="font-size:.82rem;color:var(--muted)">${formatDate(o.date)} • ${o.payment} • ${o.items.length} ${o.items.length===1?'item':'itens'}</div>
+      <div class="order-card-items mt-1">${o.items.map(i=>`<img src="${i.image}" alt="${i.name}" />`).join('')}</div>
+    </div>
+    <div style="text-align:right">
+      <span class="price" style="font-size:1.6rem">${formatPrice(o.total)}</span>
+      ${o.tracking ? `<div style="font-size:.72rem;color:var(--info);margin-top:4px"><i class="fas fa-truck"></i> ${o.tracking}</div>` : ''}
+    </div>
+  </a>
+`).join('');
+</script>
+</body>
+</html>

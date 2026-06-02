@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Carrinho — BLACKLINE GEAR</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/pages.css" /><link rel="stylesheet" href="css/premium.css" /><link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+<nav class="nav" id="nav"><div class="nav-inner">
+  <a href="index.html" class="nav-logo"><img src="assets/img/logo/blackline-logo.png" alt="Blackline" height="34" /></a>
+  <ul class="nav-links"><li><a href="index.html" class="nav-link">Início</a></li><li><a href="produtos.html" class="nav-link">Produtos</a></li><li><a href="sobre.html" class="nav-link">Sobre</a></li><li><a href="faq.html" class="nav-link">FAQ</a></li><li><a href="contato.html" class="nav-link">Contato</a></li></ul>
+  <div class="nav-actions"><button class="theme-toggle" aria-label="Alternar tema"><i class="fas fa-moon icon icon-moon"></i><i class="fas fa-sun icon icon-sun"></i></button><a href="conta.html" class="btn-icon"><i class="far fa-user"></i></a><button class="nav-cart" id="openCart"><i class="fas fa-shopping-bag"></i><span class="nav-cart-count" id="cartCount">0</span></button><button class="nav-burger" id="burger"><span></span><span></span><span></span></button></div>
+</div></nav>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<div class="mobile-menu" id="mobileMenu"><div class="mobile-menu-links"><a href="index.html">Início</a><a href="produtos.html">Produtos</a><a href="sobre.html">Sobre</a><a href="contato.html">Contato</a></div></div>
+
+<div class="page-header"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Início</a><span class="sep">/</span><span>Carrinho</span></div>
+  <h1>SEU <span class="text-outline">CARRINHO</span></h1>
+</div></div>
+
+<section class="section">
+  <div class="container">
+    <!-- Empty state -->
+    <div class="empty-state" id="cartPageEmpty" style="display:none">
+      <i class="fas fa-shopping-bag"></i>
+      <h3>SEU CARRINHO ESTÁ VAZIO</h3>
+      <p>Explore nossos produtos e encontre o equipamento perfeito.</p>
+      <a href="produtos.html" class="btn btn-primary">VER PRODUTOS <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Cart with items -->
+    <div class="cart-page-layout" id="cartPageLayout">
+      <div>
+        <div class="cart-page-items" id="cartPageItems"></div>
+        <div class="mt-3"><a href="produtos.html" class="btn btn-ghost btn-sm"><i class="fas fa-arrow-left"></i> CONTINUAR COMPRANDO</a></div>
+      </div>
+      <div class="cart-page-summary">
+        <h3>RESUMO DO PEDIDO</h3>
+        <div class="cart-coupon">
+          <input type="text" class="input" placeholder="Cupom de desconto" id="couponInput" />
+          <button id="couponBtn">APLICAR</button>
+        </div>
+        <div class="cart-coupon-msg" id="couponMsg"></div>
+        <div class="cart-summary-row"><span>Subtotal</span><strong id="cpSubtotal">R$ 0</strong></div>
+        <div class="cart-summary-row"><span>Frete</span><strong style="color:var(--success)">GRÁTIS</strong></div>
+        <div class="cart-summary-row" id="cpDiscountRow" style="display:none"><span>Desconto</span><strong id="cpDiscount" style="color:var(--success)">-R$ 0</strong></div>
+        <div class="cart-summary-row total"><span>TOTAL</span><strong id="cpTotal">R$ 0</strong></div>
+        <p class="installments mt-1" id="cpInstallments"></p>
+        <a href="checkout.html" class="btn btn-primary btn-full mt-3"><i class="fas fa-lock"></i> IR PARA O CHECKOUT</a>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;font-size:.72rem;color:var(--muted)"><i class="fas fa-shield-halved" style="color:var(--success)"></i> Compra 100% segura</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom" style="border:none"><p>© 2026 BLACKLINE GEAR</p></div></div></footer>
+
+<!-- Shared cart drawer (hidden on this page but JS needs it) -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer" style="display:none"></aside>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+<span id="cartHeadCount" style="display:none"></span><span id="cartSubtotal" style="display:none"></span><span id="cartTotal" style="display:none"></span><span id="cartInstallments" style="display:none"></span><span id="cartEmpty" style="display:none"></span><span id="cartFoot" style="display:none"></span><ul id="cartItems" style="display:none"></ul>
+
+<script src="js/mock-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script><script src="js/app.js"></script><script src="js/premium.js"></script>
+<script>
+let discount = 0;
+function renderCartPage() {
+  const empty = document.getElementById('cartPageEmpty');
+  const layout = document.getElementById('cartPageLayout');
+  if (!cart.length) { empty.style.display = ''; layout.style.display = 'none'; return; }
+  empty.style.display = 'none'; layout.style.display = '';
+
+  const items = document.getElementById('cartPageItems');
+  items.innerHTML = cart.map(i => `
+    <div class="cart-page-item" data-id="${i.id}">
+      <div class="cart-page-item-img"><a href="${getProduct(i.id)?.page||'#'}"><img src="${i.image}" alt="${i.name}" /></a></div>
+      <div class="cart-page-item-info">
+        <span class="prod-card-cat">${getProduct(i.id)?.category||''}</span>
+        <h3><a href="${getProduct(i.id)?.page||'#'}">${i.name}</a></h3>
+        <span class="text-muted" style="font-size:.82rem">${formatPrice(i.price)} cada</span>
+        <div class="qty mt-1"><button data-act="dec"><i class="fas fa-minus"></i></button><span>${i.qty}</span><button data-act="inc"><i class="fas fa-plus"></i></button></div>
+      </div>
+      <div class="cart-page-item-actions">
+        <span class="cart-page-item-total">${formatPrice(i.price * i.qty)}</span>
+        <button class="cart-page-item-remove" data-act="rm"><i class="fas fa-trash"></i> Remover</button>
+      </div>
+    </div>
+  `).join('');
+
+  const sub = cart.reduce((s,i) => s + i.price*i.qty, 0);
+  const total = Math.max(0, sub - discount);
+  document.getElementById('cpSubtotal').textContent = formatPrice(sub);
+  document.getElementById('cpTotal').textContent = formatPrice(total);
+  document.getElementById('cpInstallments').innerHTML = `ou 12x de <strong>${formatPrice(total/12)}</strong> sem juros`;
+  document.getElementById('cpDiscountRow').style.display = discount > 0 ? '' : 'none';
+  document.getElementById('cpDiscount').textContent = '-' + formatPrice(discount);
+
+  // Bind qty/remove
+  items.querySelectorAll('button[data-act]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.closest('.cart-page-item').dataset.id;
+      const act = btn.dataset.act;
+      if (act === 'inc') { const x = cart.find(c=>c.id===id); if(x) x.qty++; }
+      else if (act === 'dec') { const x = cart.find(c=>c.id===id); if(x){x.qty--;if(x.qty<=0)cart=cart.filter(c=>c.id!==id);} }
+      else if (act === 'rm') { cart = cart.filter(c=>c.id!==id); }
+      saveCart(); renderCart(); renderCartPage();
+    });
+  });
+}
+renderCartPage();
+
+// Coupon
+document.getElementById('couponBtn')?.addEventListener('click', () => {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const coupon = COUPONS.find(c => c.code === code && c.active);
+  const msg = document.getElementById('couponMsg');
+  if (!coupon) { msg.className = 'cart-coupon-msg error'; msg.textContent = 'Cupom inválido ou expirado.'; discount = 0; }
+  else {
+    const sub = cart.reduce((s,i) => s + i.price*i.qty, 0);
+    if (sub < coupon.minOrder) { msg.className = 'cart-coupon-msg error'; msg.textContent = `Pedido mínimo: ${formatPrice(coupon.minOrder)}`; discount = 0; }
+    else {
+      discount = coupon.type === 'fixed' ? coupon.value : Math.round(sub * coupon.value / 100);
+      msg.className = 'cart-coupon-msg success';
+      msg.textContent = `✓ Cupom ${code} aplicado! -${formatPrice(discount)}`;
+    }
+  }
+  renderCartPage();
+});
+</script>
+</body>
+</html>

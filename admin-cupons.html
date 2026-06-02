@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cupons — Admin BLACKLINE</title>
+<link rel="icon" type="image/png" href="assets/img/logo/blackline-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="css/variables.css" /><link rel="stylesheet" href="css/base.css" /><link rel="stylesheet" href="css/components.css" /><link rel="stylesheet" href="css/layout.css" /><link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar" id="adminTopbar"></div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--yellow-10);color:var(--yellow)"><i class="fas fa-ticket"></i></div><div class="stat-card-value" id="totalCoupons">0</div><div class="stat-card-label">CUPONS ATIVOS</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--success-dim);color:var(--success)"><i class="fas fa-check"></i></div><div class="stat-card-value" id="totalUses">0</div><div class="stat-card-label">USOS TOTAIS</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--info-dim);color:var(--info)"><i class="fas fa-dollar-sign"></i></div><div class="stat-card-value">R$ 3.250</div><div class="stat-card-label">DESCONTO TOTAL</div></div>
+      <div class="stat-card"><div class="stat-card-icon" style="background:var(--warning-dim);color:var(--warning)"><i class="fas fa-fire"></i></div><div class="stat-card-value">BLACKFRIDAY</div><div class="stat-card-label">MAIS USADO</div></div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px;position:relative">
+        <input class="input" placeholder="Buscar por código..." style="padding-left:42px" id="searchCoupon" />
+        <i class="fas fa-search" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted)"></i>
+      </div>
+      <button class="btn btn-primary" onclick="document.getElementById('newCouponModal').classList.add('open')"><i class="fas fa-plus"></i> NOVO CUPOM</button>
+    </div>
+
+    <!-- Cards grid -->
+    <div id="couponsGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px"></div>
+  </main>
+</div>
+
+<!-- New Coupon Modal -->
+<div class="modal-overlay" id="newCouponModal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header"><h3>NOVO CUPOM</h3><button class="modal-close" onclick="closeModal('newCouponModal')">×</button></div>
+    <div class="modal-body">
+      <form id="couponForm" style="display:flex;flex-direction:column;gap:14px">
+        <div class="input-group"><label class="input-label">Código do cupom</label><input class="input" placeholder="Ex: BLACKFRIDAY" id="cCode" required style="text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-mono)" /></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="input-group"><label class="input-label">Tipo</label><select class="input" id="cType"><option value="fixed">Valor fixo (R$)</option><option value="percent">Porcentagem (%)</option></select></div>
+          <div class="input-group"><label class="input-label">Valor</label><input class="input" type="number" placeholder="0" id="cValue" required /></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="input-group"><label class="input-label">Pedido mínimo (R$)</label><input class="input" type="number" placeholder="0" id="cMin" /></div>
+          <div class="input-group"><label class="input-label">Limite de usos</label><input class="input" type="number" placeholder="100" id="cMax" /></div>
+        </div>
+        <div class="input-group"><label class="input-label">Data de expiração</label><input class="input" type="date" id="cExp" /></div>
+        <label class="checkbox-row"><input type="checkbox" checked id="cActive" /> Cupom ativo</label>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('newCouponModal')">CANCELAR</button>
+      <button class="btn btn-primary" onclick="saveCoupon()"><i class="fas fa-check"></i> CRIAR CUPOM</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/admin-shared.js"></script>
+<script>
+renderAdminSidebar('cupons');
+renderAdminTopbar('Cupons de Desconto');
+
+document.getElementById('totalCoupons').textContent = COUPONS.filter(c => c.active).length;
+document.getElementById('totalUses').textContent = COUPONS.reduce((s,c) => s + c.used, 0);
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToastMsg(m) { const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+function saveCoupon() { closeModal('newCouponModal'); showToastMsg('Cupom criado com sucesso!'); }
+
+function renderCoupons() {
+  const search = document.getElementById('searchCoupon').value.toUpperCase();
+  const items = COUPONS.filter(c => !search || c.code.includes(search));
+  document.getElementById('couponsGrid').innerHTML = items.map(c => {
+    const usagePct = c.maxUses ? (c.used / c.maxUses * 100) : 0;
+    const exhausted = c.used >= c.maxUses;
+    const expired = new Date(c.expiresAt) < new Date();
+    return `
+    <div class="card" style="padding:24px;border-radius:var(--r-md);position:relative;border:2px dashed ${c.active && !exhausted && !expired ? 'var(--border-yellow)' : 'var(--border)'}">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
+        <div>
+          <span style="font-family:var(--font-mono);font-size:1.4rem;font-weight:700;color:var(--yellow);letter-spacing:.1em">${c.code}</span>
+          <div class="mt-1">
+            ${c.active && !exhausted && !expired ? '<span class="badge badge-success">Ativo</span>' : c.active && exhausted ? '<span class="badge badge-warning">Esgotado</span>' : expired ? '<span class="badge badge-danger">Expirado</span>' : '<span class="badge badge-ghost">Inativo</span>'}
+          </div>
+        </div>
+        <div class="table-actions">
+          <button class="edit" title="Editar"><i class="fas fa-pen"></i></button>
+          <button class="del" title="Excluir"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+      <div style="font-family:var(--font-display);font-size:2rem;color:var(--fg);line-height:1;margin-bottom:8px">
+        ${c.type === 'fixed' ? formatPrice(c.value) : c.value + '%'}
+      </div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">
+        ${c.minOrder ? 'Pedido mínimo: ' + formatPrice(c.minOrder) : 'Sem mínimo de pedido'}<br>
+        Expira em: ${formatDate(c.expiresAt)}
+      </p>
+      <div style="font-size:.78rem;margin-bottom:6px;display:flex;justify-content:space-between"><span class="text-muted">Usos: ${c.used} / ${c.maxUses}</span><strong>${Math.round(usagePct)}%</strong></div>
+      <div class="progress"><div class="progress-fill" style="width:${usagePct}%;background:${usagePct >= 90 ? 'var(--danger)' : usagePct >= 70 ? 'var(--warning)' : 'var(--success)'}"></div></div>
+    </div>
+  `;}).join('');
+}
+
+document.getElementById('searchCoupon').addEventListener('input', renderCoupons);
+renderCoupons();
+</script>
+</body>
+</html>

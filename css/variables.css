@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════
+   BLACKLINE GEAR — DESIGN SYSTEM
+   Inspired by Apple, Tesla, DJI, Garmin
+═══════════════════════════════════════ */
+
+:root {
+  /* ─── Core Colors ─── */
+  --bg:          #060608;
+  --bg-2:        #0c0c10;
+  --bg-3:        #141418;
+  --bg-card:     #18181c;
+  --bg-elevated: #1e1e24;
+  --bg-glass:    rgba(20, 20, 28, 0.72);
+
+  --fg:          #f0f0f2;
+  --fg-2:        #c8c8cc;
+  --muted:       #6e6e78;
+  --muted-2:     #3a3a42;
+
+  /* ─── Brand ─── */
+  --yellow:      #FFD400;
+  --yellow-dim:  #B89800;
+  --yellow-glow: rgba(255, 212, 0, 0.15);
+  --yellow-10:   rgba(255, 212, 0, 0.10);
+  --yellow-5:    rgba(255, 212, 0, 0.05);
+
+  /* ─── Semantic ─── */
+  --success:     #22C55E;
+  --success-dim: rgba(34, 197, 94, 0.15);
+  --warning:     #F59E0B;
+  --warning-dim: rgba(245, 158, 11, 0.15);
+  --danger:      #EF4444;
+  --danger-dim:  rgba(239, 68, 68, 0.15);
+  --info:        #3B82F6;
+  --info-dim:    rgba(59, 130, 246, 0.15);
+
+  /* ─── Borders ─── */
+  --border:      rgba(255, 255, 255, 0.06);
+  --border-2:    rgba(255, 255, 255, 0.10);
+  --border-3:    rgba(255, 255, 255, 0.16);
+  --border-yellow: rgba(255, 212, 0, 0.25);
+
+  /* ─── Typography ─── */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* ─── Spacing ─── */
+  --section-gap:  clamp(80px, 10vw, 140px);
+  --container:    1400px;
+  --gutter:       clamp(16px, 4vw, 40px);
+
+  /* ─── Radius ─── */
+  --r-xs:  4px;
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  20px;
+  --r-xl:  32px;
+  --r-full: 999px;
+
+  /* ─── Shadows ─── */
+  --sh-sm:    0 2px 8px rgba(0,0,0,0.3);
+  --sh-md:    0 8px 32px rgba(0,0,0,0.4);
+  --sh-lg:    0 24px 64px rgba(0,0,0,0.5);
+  --sh-xl:    0 40px 100px rgba(0,0,0,0.6);
+  --sh-glow:  0 0 60px rgba(255, 212, 0, 0.12);
+  --sh-inner: inset 0 1px 0 rgba(255,255,255,0.05);
+
+  /* ─── Glass ─── */
+  --glass-bg:     rgba(20, 20, 28, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur:   20px;
+
+  /* ─── Transitions ─── */
+  --ease:        0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-slow:   0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ─── Z-index ─── */
+  --z-dropdown: 50;
+  --z-sticky:   100;
+  --z-drawer:   200;
+  --z-modal:    300;
+  --z-toast:    400;
+  --z-loader:   9999;
+
+  /* ─── Admin sidebar ─── */
+  --sidebar-w: 260px;
+}
