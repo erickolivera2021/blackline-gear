@@ -90,11 +90,24 @@
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
 
-<script src="js/mock-data.js"></script>
+<script src="js/mock-data.js"></script><script src="js/orders.js"></script>
 <script src="js/admin-shared.js"></script>
 <script>
 renderAdminSidebar('dashboard');
 renderAdminTopbar('Dashboard', '<button class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> EXPORTAR</button>');
+
+// Show real stats (merge of real localStorage orders + mock)
+(function updateRealStats() {
+  const all = getAllOrders();
+  const active = all.filter(o => o.status !== 'cancelled');
+  const realCustomers = getAllCustomers();
+  const revenue = active.reduce((s, o) => s + (o.total || 0), 0);
+  const avg = active.length ? revenue / active.length : 0;
+  document.getElementById('statRevenue').textContent = formatPrice(revenue);
+  document.getElementById('statOrders').textContent = all.length;
+  document.getElementById('statCustomers').textContent = realCustomers.length;
+  document.getElementById('statAvg').textContent = formatPrice(avg);
+})();
 
 // Revenue chart
 const ctx = document.getElementById('revenueChart').getContext('2d');
@@ -138,8 +151,8 @@ new Chart(document.getElementById('topProductsChart').getContext('2d'), {
   }
 });
 
-// Recent orders widget
-document.getElementById('recentOrders').innerHTML = ORDERS.slice(0, 4).map(o => `
+// Recent orders widget (real first, then mock)
+document.getElementById('recentOrders').innerHTML = getAllOrders().slice(0, 4).map(o => `
   <div class="recent-order">
     <div class="avatar avatar-sm">${o.customer.name.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>
     <div class="recent-order-info">

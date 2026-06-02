@@ -111,7 +111,7 @@
 <!-- Hidden cart elements for app.js -->
 <span id="cartCount" style="display:none"></span><span id="cartHeadCount" style="display:none"></span><span id="cartSubtotal" style="display:none"></span><span id="cartTotal" style="display:none"></span><span id="cartInstallments" style="display:none"></span><span id="cartEmpty" style="display:none"></span><span id="cartFoot" style="display:none"></span><ul id="cartItems" style="display:none"></ul>
 
-<script src="js/mock-data.js"></script>
+<script src="js/mock-data.js"></script><script src="js/orders.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script><script src="js/app.js"></script><script src="js/premium.js"></script>
 <script>
 // Render checkout items
@@ -165,10 +165,43 @@ document.querySelectorAll('.payment-option').forEach(opt => {
   });
 });
 
-// Finish order — save to localStorage as mock order
-document.getElementById('finishOrder')?.addEventListener('click', () => {
-  const mockOrder = { id: 1043 + Math.floor(Math.random()*100), items: [...cart], total: sub, date: new Date().toISOString().split('T')[0], status: 'paid' };
-  localStorage.setItem('bl_last_order', JSON.stringify(mockOrder));
+// Finish order — save REAL order to localStorage (visible in admin)
+document.getElementById('finishOrder')?.addEventListener('click', (e) => {
+  // Capture all form fields
+  const inputs = document.querySelectorAll('#panel-1 input, #panel-2 input');
+  const fields = {};
+  const labels = ['name','email','phone','cpf','cep','cityState','street','number','complement','neighborhood'];
+  inputs.forEach((inp, i) => { fields[labels[i] || ('field_'+i)] = inp.value; });
+
+  const shipMethod = document.querySelector('input[name="ship"]:checked')?.value || 'pac';
+  const payMethod = document.querySelector('input[name="pay"]:checked')?.value || 'pix';
+  const shipCost = shipMethod === 'sedex' ? 18.90 : (shipMethod === 'jadlog' ? 12.50 : 0);
+  const shipLabels = { pac: 'PAC — Correios', sedex: 'SEDEX — Correios', jadlog: 'JadLog' };
+  const payLabels = { pix: 'PIX', card: 'Cartão de Crédito', boleto: 'Boleto' };
+
+  const realOrder = createRealOrder({
+    customer: { name: fields.name || 'Cliente', email: fields.email || '', phone: fields.phone || '' },
+    items: cart.map(i => ({ productId: i.id, name: i.name, qty: i.qty, price: i.price, image: i.image })),
+    subtotal: sub,
+    shipping: shipCost,
+    discount: 0,
+    total: sub + shipCost,
+    payment: payLabels[payMethod],
+    shippingMethod: shipLabels[shipMethod],
+    address: {
+      street: fields.street || '',
+      number: fields.number || '',
+      complement: fields.complement || '',
+      neighborhood: fields.neighborhood || '',
+      city: (fields.cityState || '').split('/')[0]?.trim() || '',
+      state: (fields.cityState || '').split('/')[1]?.trim() || '',
+      zip: fields.cep || ''
+    }
+  });
+
+  // Decrement stock for purchased items
+  cart.forEach(i => { try { decrementStock(i.id, i.qty); } catch {} });
+
   cart = []; saveCart(); renderCart();
 });
 </script>

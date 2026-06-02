@@ -129,7 +129,7 @@ const PRODUCTS = [
   }
 ];
 
-const ORDERS = [
+let ORDERS = [
   {
     id: 1042, number: '#BL-1042', date: '2026-05-28',
     customer: { name: 'Carlos Mendes', email: 'carlos@email.com', phone: '(11) 98765-4321' },
@@ -180,7 +180,7 @@ const ORDERS = [
   }
 ];
 
-const CUSTOMERS = [
+let CUSTOMERS = [
   { id: 1, name: 'Carlos Mendes', email: 'carlos@email.com', phone: '(11) 98765-4321', orders: 3, totalSpent: 1846, since: '2025-08-15' },
   { id: 2, name: 'Ana Silva', email: 'ana@email.com', phone: '(21) 97654-3210', orders: 1, totalSpent: 638, since: '2026-05-27' },
   { id: 3, name: 'Pedro Lima', email: 'pedro@email.com', phone: '(31) 96543-2109', orders: 2, totalSpent: 797, since: '2026-01-10' },

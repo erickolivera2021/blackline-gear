@@ -23,7 +23,7 @@
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
 
-<script src="js/mock-data.js"></script>
+<script src="js/mock-data.js"></script><script src="js/orders.js"></script>
 <script src="js/admin-shared.js"></script>
 <script>
 renderAdminSidebar('pedidos');
@@ -113,11 +113,13 @@ document.getElementById('orderDetail').innerHTML = `
       <div class="card" style="padding:24px;border-radius:var(--r-md);margin-bottom:16px">
         <h3 class="heading-md mb-3">AÇÕES</h3>
         <div style="display:flex;flex-direction:column;gap:10px">
-          <button class="btn btn-primary" onclick="showToastMsg('Status atualizado!')"><i class="fas fa-check"></i> MARCAR COMO PAGO</button>
-          <button class="btn btn-ghost" onclick="showToastMsg('Pedido enviado!')"><i class="fas fa-truck"></i> MARCAR COMO ENVIADO</button>
-          <div class="input-group"><label class="input-label">Código de rastreio</label><input class="input" placeholder="BR123456789BR" value="${order.tracking || ''}" /></div>
+          <button class="btn btn-primary" onclick="changeStatus('paid')"><i class="fas fa-check"></i> MARCAR COMO PAGO</button>
+          <button class="btn btn-ghost" onclick="changeStatus('shipped')"><i class="fas fa-truck"></i> MARCAR COMO ENVIADO</button>
+          <button class="btn btn-ghost" onclick="changeStatus('delivered')"><i class="fas fa-house"></i> MARCAR COMO ENTREGUE</button>
+          <div class="input-group"><label class="input-label">Código de rastreio</label><input class="input" placeholder="BR123456789BR" value="${order.tracking || ''}" id="trackingInput" /></div>
+          <button class="btn btn-ghost" onclick="saveTracking()"><i class="fas fa-save"></i> SALVAR RASTREIO</button>
           <button class="btn btn-ghost" onclick="showToastMsg('Email enviado ao cliente!')"><i class="fas fa-envelope"></i> NOTIFICAR CLIENTE</button>
-          <button class="btn btn-danger" onclick="showToastMsg('Pedido cancelado')"><i class="fas fa-times"></i> CANCELAR PEDIDO</button>
+          <button class="btn btn-danger" onclick="changeStatus('cancelled')"><i class="fas fa-times"></i> CANCELAR PEDIDO</button>
         </div>
       </div>
 
@@ -145,6 +147,27 @@ function showToastMsg(m) {
   document.getElementById('toastMsg').textContent = m;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function changeStatus(newStatus) {
+  if (!order.isReal) {
+    showToastMsg('Apenas pedidos reais podem ser atualizados');
+    return;
+  }
+  updateOrderStatus(order.id, newStatus);
+  showToastMsg('Status atualizado para: ' + (STATUS_LABELS[newStatus] || newStatus));
+  setTimeout(() => location.reload(), 800);
+}
+
+function saveTracking() {
+  if (!order.isReal) {
+    showToastMsg('Apenas pedidos reais podem ser atualizados');
+    return;
+  }
+  const code = document.getElementById('trackingInput').value.trim();
+  updateOrderTracking(order.id, code);
+  showToastMsg('Código de rastreio salvo!');
+  setTimeout(() => location.reload(), 800);
 }
 </script>
 </body>
